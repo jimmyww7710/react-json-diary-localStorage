@@ -61,7 +61,6 @@ const App = () => {
   const deleteItem = async (id) => {
     try {
       const currentData = deleteData(id);
-      console.log(currentData);
       setData(currentData);
     } catch (error) {
       console.error("Error deleting item", error);
@@ -78,7 +77,7 @@ const App = () => {
       <section className="w-[60%]">
         <div className="flex">
           <h1 className="text-3xl font-bold text-gray-800 mb-5 mr-5">Daily Record</h1>
-          <ExportJsonToExcel jsonData={data} fileName="dairy-all" buttonName='Export To Excel' />
+          <ExportJsonToExcel jsonData={data} fileName="diary-all" buttonName='Export To Excel' />
         </div>
         <div className="flex space-x-3 mt-5 mb-5">
           <textarea
@@ -105,8 +104,6 @@ const App = () => {
         />
         <ul className="w-full mt-5 bg-white shadow rounded-lg divide-y divide-gray-200">
           {data.filter(item => {
-            console.log(item);
-            console.log(item?.content);
             return item?.content?.includes(filterText) || item?.date?.includes(filterText) || filterText == ""
           }).map((item) => (
             <li key={item.id} className="flex flex-wrap justify-between items-center p-4">

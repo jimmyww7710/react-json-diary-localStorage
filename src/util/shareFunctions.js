@@ -1,18 +1,17 @@
-console.log(localStorage.getItem('JWdairy'));
-let dairy = JSON.parse(localStorage.getItem('JWdairy')) ?? [];
+let diary = JSON.parse(localStorage.getItem('JWdiary')) ?? [];
 
 export function getData() {
-    return dairy ?? [];
+    return diary ?? [];
 }
 
 export function addData({ id, content, date }) {
-    dairy.push({ id, content, date });
-    localStorage.setItem('JWdairy', JSON.stringify(dairy));
-    return dairy;
+    diary.push({ id, content, date });
+    localStorage.setItem('JWdiary', JSON.stringify(diary));
+    return diary;
 }
 
 export function deleteData(id) {
-    dairy = dairy.filter((item) => item.id !== id);
-    localStorage.setItem('JWdairy', JSON.stringify(dairy));
-    return dairy;
+    diary = diary.filter((item) => item.id !== id);
+    localStorage.setItem('JWdiary', JSON.stringify(diary));
+    return diary;
 }

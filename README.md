@@ -1,1 +1,1 @@
-# react-json-dairy-localStorage
+# react-json-diary-localStorage
