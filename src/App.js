@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getData, addData, deleteData } from "../src/util/shareFunctions";
 import { MdOutlineAddCircleOutline, MdOutlineRemoveCircleOutline } from 'react-icons/md';
 import Popup from './component/Popup';
+import ExportJsonToExcel from './component/ExportJsonToExcel'
 
 const App = () => {
   const [data, setData] = useState([]);
@@ -74,9 +75,12 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col p-5 items-center">
-      <h1 className="text-3xl font-bold text-gray-800 mb-5">Daily Record</h1>
       <section className="w-[60%]">
-        <div className="flex space-x-3 mb-5">
+        <div className="flex">
+          <h1 className="text-3xl font-bold text-gray-800 mb-5 mr-5">Daily Record</h1>
+          <ExportJsonToExcel jsonData={data} fileName="dairy-all" buttonName='Export To Excel' />
+        </div>
+        <div className="flex space-x-3 mt-5 mb-5">
           <textarea
             value={newItem}
             onChange={(e) => setNewItem(e.target.value)}
