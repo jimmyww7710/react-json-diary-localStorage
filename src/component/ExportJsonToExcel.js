@@ -1,5 +1,6 @@
 import React from "react";
 import * as XLSX from "xlsx";
+import { MdDownload } from 'react-icons/md';
 
 const ExportJsonToExcel = ({ jsonData, fileName, buttonName }) => {
     const handleExport = () => {
@@ -16,7 +17,10 @@ const ExportJsonToExcel = ({ jsonData, fileName, buttonName }) => {
 
     return (
         <div>
-            <button className="px-4 py-2 border-2 border-green-600 bg-green-600 text-white rounded hover:bg-green-700" onClick={handleExport}>{buttonName}</button>
+            <button className="px-4 py-2 border-2 border-green-600 bg-green-600 text-white rounded hover:bg-green-700 flex items-center justify-between" onClick={handleExport}>
+                <MdDownload />
+                {buttonName}
+            </button>
         </div>
     );
 };

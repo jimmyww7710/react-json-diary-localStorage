@@ -11,6 +11,8 @@ const App = () => {
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [popupId, setPopupId] = useState(null);
 
+  const [showPlusOne, setShowPlusOne] = useState(false);
+
   const closePopup = () => setPopupOpen(false);
 
   useEffect(() => {
@@ -33,6 +35,11 @@ const App = () => {
       const response = addData({ id, content: newItem, date: currentDate });
       setData(response);
       setNewItem("");
+      setShowPlusOne(true);
+
+      setTimeout(() => {
+        setShowPlusOne(false);
+      }, 1500);
     } catch (error) {
       console.error("Error adding item", error);
     }
@@ -74,17 +81,17 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col p-5 items-center">
-      <section className="w-[60%]">
-        <div className="flex">
-          <h1 className="text-3xl font-bold text-gray-800 mb-5 mr-5">Daily Record</h1>
-          <ExportJsonToExcel jsonData={data} fileName="diary-all" buttonName='Export To Excel' />
+      <section className="w-[100%] sm:w-[60%]">
+        <div className="flex justify-between">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800 mr-5 self-center flex-shrink-0">Daily Record</h1>
+          <ExportJsonToExcel jsonData={data} fileName="diary-all" buttonName='Excel' />
         </div>
-        <div className="flex space-x-3 mt-5 mb-5">
+        <div className="flex space-x-3 mt-8 mb-5 relative">
           <textarea
             value={newItem}
             onChange={(e) => setNewItem(e.target.value)}
             placeholder="Add new item"
-            className="w-full h-32 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="w-full max-h-64 min-h-32 px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
           </textarea>
           <button
@@ -93,15 +100,25 @@ const App = () => {
           >
             <MdOutlineAddCircleOutline />
           </button>
+          {showPlusOne && (
+            <div
+              className="mt-4 text-3xl text-yellow-500 absolute right-0 animate-fadeInOut font-black"
+              style={{ animationDuration: '1.2s', textShadow: '1px 2px #ffffff' }}
+            >
+              +1
+            </div>
+          )}
         </div>
-        <label htmlFor="">filter: </label>
-        <input
-          type="text"
-
-          onChange={(e) => setFilterText(e.target.value)}
-          placeholder="keyword"
-          className="px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
+        <div class="mb-5">
+          <label htmlFor="filter" class="mr-5">Filter: </label>
+          <input
+            type="text"
+            id="filter"
+            onChange={(e) => setFilterText(e.target.value)}
+            placeholder="keyword"
+            className="px-4 py-2 border border-gray-300 rounded-lg shadow-sm"
+          />
+        </div>
         <ul className="w-full mt-5 bg-white shadow rounded-lg divide-y divide-gray-200">
           {data.filter(item => {
             return item?.content?.includes(filterText) || item?.date?.includes(filterText) || filterText === ""
@@ -119,7 +136,7 @@ const App = () => {
               </div>
 
 
-              <span className="text-gray-700">{item.content}</span>
+              <span className="text-gray-700" style={{ whiteSpace: 'pre-line' }}>{item.content}</span>
             </li>
           ))}
         </ul>
