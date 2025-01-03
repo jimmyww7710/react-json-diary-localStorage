@@ -29,6 +29,9 @@ const App = () => {
   };
 
   const addItem = async () => {
+    if (!newItem) {
+      return;
+    }
     const id = Date.now().toString(); // Simple unique ID
     try {
       const currentDate = getFormattedDate();
