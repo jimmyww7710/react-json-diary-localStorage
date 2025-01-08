@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { getData, addData, deleteData } from "../src/util/shareFunctions";
-import { MdOutlineAddCircleOutline, MdOutlineRemoveCircleOutline } from 'react-icons/md';
+import { getData, addData, deleteData, editData } from "../src/util/shareFunctions";
+import { MdOutlineAddCircleOutline, MdOutlineRemoveCircleOutline, MdCreate, MdOutlineCheck, MdClose } from 'react-icons/md';
 import Popup from './component/Popup';
 import ExportJsonToExcel from './component/ExportJsonToExcel'
 
 const App = () => {
   const [data, setData] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
+  const [tempContent, setTempContent] = useState("");
+  const [tempEditId, setTempEditId] = useState(0);
   const [filterText, setFilterText] = useState("");
   const [newItem, setNewItem] = useState("");
   const [isPopupOpen, setPopupOpen] = useState(false);
@@ -77,6 +80,31 @@ const App = () => {
     }
   };
 
+  const handleContentChange = (newContent) => {
+    setTempContent(newContent);
+  };
+
+  const editItem = async (id) => {
+    try {
+      console.log('id', id);
+      setTempEditId(id);
+      editData({ id, content: tempContent });
+      setData(prevItems =>
+        prevItems.map(item =>
+          item.id === id ? { ...item, content: tempContent } : item
+        )
+      );
+      setIsEdit(false);
+    } catch (error) {
+      console.error("Error editing item", error);
+    }
+  };
+
+  const openEditArea = (id) => {
+    setTempEditId(id);
+    setIsEdit(true);
+  }
+
   const confirmPopup = async (id) => {
     setPopupOpen(true);
     setPopupId(id);
@@ -112,8 +140,8 @@ const App = () => {
             </div>
           )}
         </div>
-        <div class="mb-5">
-          <label htmlFor="filter" class="mr-5">Filter: </label>
+        <div className="mb-5">
+          <label htmlFor="filter" className="mr-5">Filter: </label>
           <input
             type="text"
             id="filter"
@@ -130,18 +158,46 @@ const App = () => {
 
               <div className="w-full flex justify-between mb-2">
                 <span className="text-gray-700" >{item.date}</span>
-                <button
-                  onClick={() => confirmPopup(item.id)}
-                  className="text-red-500 hover:text-red-600 transition"
-                >
-                  <MdOutlineRemoveCircleOutline />
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => { openEditArea(item.id) }}
+                    className="text-black-500 hover:text-black-600 transition"
+                  >
+                    <MdCreate />
+                  </button>
+                  <button
+                    onClick={() => confirmPopup(item.id)}
+                    className="text-red-500 hover:text-red-600 transition"
+                  >
+                    <MdOutlineRemoveCircleOutline />
+                  </button>
+                </div>
               </div>
 
-
-              <span className="text-gray-700" style={{ whiteSpace: 'pre-line' }}>{item.content}</span>
+              {(!isEdit || (isEdit && tempEditId !== item.id)) && (
+                <span className="text-gray-700" style={{ whiteSpace: 'pre-line' }}>
+                  {item.content}
+                </span>
+              )}
+              {isEdit && tempEditId === item.id && <div className="flex w-[80%]">
+                <textarea className="text-gray-700 border flex-grow p-2 mr-2" onChange={(e) => handleContentChange(e.target.value)}>{item.content}</textarea>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => editItem(item.id)}
+                    className="text-black-500 hover:text-black-600 transition"
+                  >
+                    <MdOutlineCheck />
+                  </button>
+                  <button
+                    onClick={() => { setIsEdit(false) }}
+                    className="text-red-500 hover:text-red-600 transition"
+                  >
+                    <MdClose />
+                  </button>
+                </div>
+              </div>}
             </li>
-          ))}
+          )).reverse()}
         </ul>
       </section>
       <Popup isOpen={isPopupOpen} popupId={popupId} closePopup={closePopup} callBack={deleteItem} title={'Confirm to delete this item?'} />
